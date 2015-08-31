@@ -58,4 +58,8 @@ class Item
       end
     end
   end
+
+  def ==(other)
+    @id == other.id
+  end
 end

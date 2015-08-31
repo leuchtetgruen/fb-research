@@ -1,5 +1,5 @@
 class Person < Item
-  attr_accessor :name, :data
+  attr_accessor :name, :about, :address, :bio, :birthday, :email, :first_name, :gender, :hometown, :last_name, :location, :website
 
 
   def events
