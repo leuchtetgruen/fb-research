@@ -4,6 +4,6 @@ class Page < NamedItem
   end
 
   def feed
-    query_posts(url_for("feed"))
+    query_posts(url_for("feed")).map { |p| p.page = self }
   end
 end

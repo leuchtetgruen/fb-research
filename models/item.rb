@@ -60,6 +60,6 @@ class Item
   end
 
   def ==(other)
-    @id == other.id
+    (@id == other.id)
   end
 end

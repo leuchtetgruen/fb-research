@@ -14,3 +14,14 @@ class Person < Item
     query_people(url_for("friends"))
   end
 end
+
+class PeopleDatabase < Database
+	def initialize(filename="output/people.json")
+		super(filename, Person)
+	end
+
+	def peopleNamed(name)
+		rxName = Regexp.new(name)
+		@data.values.select { |p| p.name =~ rxName }
+	end
+end
