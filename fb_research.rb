@@ -15,6 +15,7 @@ require "models/post.rb"
 require "models/person.rb"
 require "models/media_item.rb"
 require "models/comment.rb"
+require "models/invitation.rb"
 require "models/event.rb"
 require "models/like.rb"
 
@@ -26,6 +27,12 @@ pagesDatabase = PagesDatabase.new
 
 puts "Loading posts..."
 postsDatabase = PostsDatabase.new
+
+puts "Loading events..."
+eventsDatabase = EventsDatabase.new
+
+puts "Loading invitations..."
+invitationsDatabase = InvitationsDatabase.new
 
 puts "Loading likes..."
 likesDatabase = LikesDatabase.new

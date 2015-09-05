@@ -1,6 +1,6 @@
 class Page < NamedItem
   def events
-    query_events(url_for("events"))
+    query_events(url_for("events")).map { |e| e.page = self; e }
   end
 
   def feed

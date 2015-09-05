@@ -34,9 +34,9 @@ class CommentsDatabase < Database
 		all.each { |c| c.author.query_data(peopleDatabase) }
 	end
 
-	def load_posts(postDatabase, pageDatabase=nil)
+	def load_posts(postsDatabase, pageDatabase=nil)
 		postDatabase.load_pages(pageDatabase) if pageDatabase
-		all.each { |c| c.page.query_data(pageDatabase) }
+		all.each { |c| c.refers_to.query_data(postsDatabase) }
 	end
 
 	def has_post?(p)
