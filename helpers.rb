@@ -45,11 +45,19 @@ def query_posts(url)
   query(url, Post)
 end
 
-def json(obj)
+def json(obj,database=false)
   if obj.kind_of? Array
-    obj.map(&:to_h).to_json
+		if database
+			obj.map { |o| o.to_h(0, false, true) }.to_json
+		else
+			obj.map(&:to_h).to_json
+		end
   else
-    obj.to_h.to_json
+		if database
+			obj.to_h(0, false, true).to_json
+		else
+			obj.to_h.to_json
+		end
   end
 end
 

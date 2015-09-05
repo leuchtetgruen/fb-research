@@ -20,8 +20,8 @@ class PeopleDatabase < Database
 		super(filename, Person)
 	end
 
-	def peopleNamed(name)
+	def people_named(name)
 		rxName = Regexp.new(name)
-		@data.values.select { |p| p.name =~ rxName }
+		all.select { |p| p.name =~ rxName }
 	end
 end

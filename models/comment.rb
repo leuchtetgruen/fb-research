@@ -14,7 +14,28 @@ class CommentsDatabase < Database
 		super(filename, Comment)
 	end
 
-	def comments_by(person)
-		@data.values.select { |c| c.author == person }
+	def by_person(person)
+		all.select { |c| c.author == person }
+	end
+
+	def for_post(post)
+		all.select { |c| c.refers_to == post }
+	end
+
+	def on_page(page)
+		all.select { |c| c.refers_to.page == page }
+	end
+
+	def pages
+		all.map { |c| c.refers_to.page }.uniq { |p| p.id }
+	end
+
+	def load_authors(peopleDatabase)
+		all.each { |c| c.author.query_data(peopleDatabase) }
+	end
+
+	def load_posts(postDatabase, pageDatabase=nil)
+		postDatabase.load_pages(pageDatabase) if pageDatabase
+		all.each { |c| c.page.query_data(pageDatabase) }
 	end
 end

@@ -21,6 +21,14 @@ class Database
 		@data[obj.id] = obj
 	end
 
+	def putAll(objs, do_query_data=false)
+		objs.each { |o| put(o, do_query_data) }
+	end
+
+	def putNew(objs, do_query_data=false)
+		putAll(objs.select { |o| include?(o) }, do_query_data)
+	end
+
 	def remove(id)
 		@data.delete(id)
 	end
@@ -36,10 +44,18 @@ class Database
 	end
 
 	def persist()
-		save(json(@data.values), @filename)
+		save(json(@data.values, true), @filename)
+	end
+
+	def include?(obj)
+		@data.keys.include?(obj.id)
 	end
 
 	def size
 		@data.keys.size
+	end
+
+	def all
+		@data.values
 	end
 end

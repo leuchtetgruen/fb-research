@@ -16,8 +16,21 @@ require "models/person.rb"
 require "models/media_item.rb"
 require "models/comment.rb"
 require "models/event.rb"
+require "models/like.rb"
 
+puts "Loading people..."
 peopleDatabase = PeopleDatabase.new
+
+puts "Loading pages..."
+pagesDatabase = PagesDatabase.new
+
+puts "Loading posts..."
+postsDatabase = PostsDatabase.new
+
+puts "Loading likes..."
+likesDatabase = LikesDatabase.new
+
+puts "Loading comments..."
 commentsDatabase = CommentsDatabase.new
 
 binding.pry
