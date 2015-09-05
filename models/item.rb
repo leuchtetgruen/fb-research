@@ -55,7 +55,13 @@ class Item
     h_attrs = {}
     attrs.each { |attr| h_attrs[attr[0]] = attr[1] }
     h_ret = h_attrs.merge(@data || {})
-		h_ret.delete("data") if database
+		if database
+			h_ret.delete("data") 
+			keys = h_ret.keys
+			keys.each do |k|
+				h_ret.delete(k) if h_ret[k].nil?
+			end
+		end
 
 		h_ret
   end

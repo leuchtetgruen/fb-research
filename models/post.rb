@@ -39,7 +39,11 @@ class PostsDatabase < Database
 		all.map(&:page).uniq { |p| p.id }
 	end
 
-	def save_likes(likesDatabase)
-		all.each_with_index { |p,idx| puts idx; likesDatabase.putAll(p.likes) unless likesDatabase.has_post?(p); likesDatabase.persist if (idx%50==0) }
+	def save_likes(likesDatabase,saveEvery=100)
+		all.each_with_index { |p,idx| puts idx; likesDatabase.putAll(p.likes) unless likesDatabase.has_post?(p); likesDatabase.persist if (idx%saveEvery==0) }
+	end
+
+	def save_comments(commentsDatabase,saveEvery=100)
+		all.each_with_index { |p,idx| puts idx; commentsDatabase.putAll(p.comments) unless commentsDatabase.has_post?(p); commentsDatabase.persist if (idx%saveEvery==0) }
 	end
 end

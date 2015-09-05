@@ -38,4 +38,8 @@ class CommentsDatabase < Database
 		postDatabase.load_pages(pageDatabase) if pageDatabase
 		all.each { |c| c.page.query_data(pageDatabase) }
 	end
+
+	def has_post?(p)
+		all.map(&:refers_to).map(&:id).include?(p.id)
+	end
 end
