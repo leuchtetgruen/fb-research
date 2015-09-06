@@ -50,6 +50,17 @@ class Item
         end
       end
 
+			if obj.kind_of?(Array)
+				obj = obj.map do |o|
+					[Person, Event, NamedItem, Comment, Item, Post, Page, Like].each do |klass|
+						if o.kind_of? klass
+							o = o.to_h(depth + 1, query_data, database)
+						end
+					end
+					o
+				end
+			end
+
       [ getter.to_s ,  obj ]
     }
     h_attrs = {}

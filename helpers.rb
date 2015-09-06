@@ -97,3 +97,24 @@ end
 def load(filename)
   File.read(filename)
 end
+
+def find_friends_instructions(person)
+	jsStatement = 'a = document.querySelectorAll(".fsl a"); re = new RegExp("id\=(.*)\&"); b = []; for (var i=0; i < a.length; i++) { if (a[i].attributes["data-hovercard"]) { b.push(a[i].attributes["data-hovercard"].nodeValue.match(re)[1]) } }; console.log(JSON.stringify(b))'
+	url = "https://facebook.com/#{person.id}"
+
+	puts "The profile page of th person will open now. Go to their friends page and scroll down until all their friends are loaded."
+	puts "Then open the developer console and insert this statement"
+	puts jsStatement
+	puts "then run  fiend_friends(Person.new(#{person.id}), RESULT, peopleDatabase) where RESULT is what you received from the console"
+	system("echo '#{jsStatement}' | pbcopy")
+	system("open #{url}")
+end
+
+def find_friends(person, array, peopleDatabase)
+	friends = array.map { |id| Person.new(id) }
+	person.friends = friends
+	peopleDatabase.put(person)
+	friends.each_with_index { |f, idx| puts "Inserting #{idx} into peopleDatabase..."; peopleDatabase.query_put_get(f); }
+	peopleDatabase.persist
+	person
+end
