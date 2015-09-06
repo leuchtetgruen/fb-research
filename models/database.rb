@@ -26,7 +26,7 @@ class Database
 	end
 
 	def putNew(objs, do_query_data=false)
-		putAll(objs.select { |o| include?(o) }, do_query_data)
+		putAll(objs.select { |o| !include?(o) }, do_query_data)
 	end
 
 	def remove(id)

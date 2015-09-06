@@ -30,6 +30,11 @@ class CommentsDatabase < Database
 		all.map { |c| c.refers_to.page }.uniq { |p| p.id }
 	end
 
+	def containing(text)
+		rxText = Regexp.new(text)
+		all.select { |c| c.message =~ rxText }
+	end
+
 	def load_authors(peopleDatabase)
 		all.each { |c| c.author.query_data(peopleDatabase) }
 	end

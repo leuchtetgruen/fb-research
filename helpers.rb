@@ -118,3 +118,109 @@ def find_friends(person, array, peopleDatabase)
 	peopleDatabase.persist
 	person
 end
+
+def import_new_posts(pagesDatabase, postsDatabase)
+	raise "Should be PagesDatabase" unless pagesDatabase.kind_of?(PagesDatabase)
+	raise "Should be PostsDatabase" unless postsDatabase.kind_of?(PostsDatabase)
+	
+	pagesDatabase.all.each do |page|
+		next if page.ignore
+		puts "Querying #{page.name} for new posts..."
+		feed = page.feed
+		postsDatabase.putNew(feed)
+	end
+end
+
+def import_comments_and_likes_from_after(timestamp, postsDatabase, pagesDatabase, commentsDatabase, likesDatabase, peopleDatabase)
+	raise "Should be PostsDatabase" unless postsDatabase.kind_of?(PostsDatabase)
+	raise "Should be PagesDatabase" unless pagesDatabase.kind_of?(PagesDatabase)
+	raise "Should be CommentsDatabase" unless commentsDatabase.kind_of?(CommentsDatabase)
+	raise "Should be LikesDatabase" unless likesDatabase.kind_of?(LikesDatabase)
+	raise "Should be PeopleDatabase" unless peopleDatabase.kind_of?(PeopleDatabase)
+
+	posts = postsDatabase.posts_newer_than(timestamp).select { |post|
+		post.page.query_data(pagesDatabase)
+		!post.page.ignore
+	}
+	posts.each_with_index do |post, idx|
+		print "Querying #{idx}/#{posts.size}."
+		comments = post.comments
+		commentsDatabase.putNew(comments)
+		print "."
+		likes = post.likes
+		likesDatabase.putNew(likes)
+
+		print "."
+		likes.map(&:person).each { |p| peopleDatabase.query_put_get(p) }
+		puts "."
+		comments.map(&:author).each { |p| peopleDatabase.query_put_get(p) }
+	end
+	puts "Saving databases..."
+	commentsDatabase.persist
+	likesDatabase.persist
+	peopleDatabase.persist
+
+	puts "Done."
+end
+
+def import_page(page, pagesDatabase, postsDatabase, commentsDatabase, likesDatabase, peopleDatabase, eventsDatabase, invitationsDatabase, ignore_existing=false)
+	raise "Should be PostsDatabase" unless postsDatabase.kind_of?(PostsDatabase)
+	raise "Should be CommentsDatabase" unless commentsDatabase.kind_of?(CommentsDatabase)
+	raise "Should be LikesDatabase" unless likesDatabase.kind_of?(LikesDatabase)
+	raise "Should be PeopleDatabase" unless peopleDatabase.kind_of?(PeopleDatabase)
+	raise "Should be EventsDatabase" unless eventsDatabase.kind_of?(EventsDatabase)
+	raise "Should be InvitationsDatabase" unless invitationsDatabase.kind_of?(InvitationsDatabase)
+
+	pagesDatabase.put(page)
+	pagesDatabase.persist
+
+	puts "Querying events..."
+	events = page.events
+	eventsDatabase.putAll(events)
+	events.each_with_index do |event, idx|
+		print "Querying #{idx}/#{events.size}."
+		invitations = event.all_invitations
+		invitationsDatabase.putAll(invitations)
+
+		puts "."
+		invitations.map(&:person).each { |p| peopleDatabase.query_put_get(p) }
+	end
+	puts "Saving databases (for events)..."
+	eventsDatabase.persist
+	invitationsDatabase.persist
+	peopleDatabase.persist
+
+	puts "Querying posts..."
+	posts = page.feed
+	if ignore_existing
+		posts = posts.select { |p| !commentsDatabase.has_post?(p) }
+	end
+	posts.each_with_index do |post, idx|
+		print "Querying #{idx}/#{posts.size}."
+		comments = post.comments
+		commentsDatabase.putAll(comments)
+		print "."
+		likes = post.likes
+		likesDatabase.putAll(likes)
+
+		print "."
+		likes.map(&:person).each { |p| peopleDatabase.query_put_get(p) }
+		puts "."
+		comments.map(&:author).each { |p| peopleDatabase.query_put_get(p) }
+
+
+		if (((idx % 100)==0) and (idx > 1))
+			puts "Saving databases (for posts)..."
+			commentsDatabase.persist
+			likesDatabase.persist
+			peopleDatabase.persist
+		end
+	end
+	puts "Saving databases (for posts)..."
+	commentsDatabase.persist
+	likesDatabase.persist
+	peopleDatabase.persist
+
+
+	puts "Done."
+end

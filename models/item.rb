@@ -1,5 +1,5 @@
 class Item
-  attr_accessor :id, :data
+  attr_accessor :id, :data, :ignore, :note
    
   def initialize(hash_or_id, query_data=Conf::QUERY_DATA)
     if hash_or_id.kind_of? String

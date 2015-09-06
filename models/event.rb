@@ -64,6 +64,10 @@ class EventsDatabase < Database
 		super(filename, Event)
 	end
 
+	def by_page(page)
+		all.select { |e| e.page.id == page.id }
+	end
+
 	def save_invitations(invitationsDatabase)
 		all.each_with_index do |e,idx|
 			puts "#{e} (#{idx})"

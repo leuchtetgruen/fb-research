@@ -2,7 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'pry'
-require 'active_support'
+require 'active_support/all'
 
 $: << "."
 

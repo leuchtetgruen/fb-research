@@ -39,6 +39,12 @@ class PostsDatabase < Database
 		all.map(&:page).uniq { |p| p.id }
 	end
 
+	def posts_newer_than(timestamp)
+		all.select do |post|
+			DateTime.parse(post.created_time) >= timestamp
+		end
+	end
+
 	def save_likes(likesDatabase,saveEvery=100)
 		all.each_with_index { |p,idx| puts idx; likesDatabase.putAll(p.likes) unless likesDatabase.has_post?(p); likesDatabase.persist if (idx%saveEvery==0) }
 	end

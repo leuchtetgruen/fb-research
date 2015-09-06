@@ -1,4 +1,5 @@
 class Page < NamedItem
+
   def events
     query_events(url_for("events")).map { |e| e.page = self; e }
   end
@@ -11,5 +12,10 @@ end
 class PagesDatabase < Database
 	def initialize(filename="output/pages.json")
 		super(filename, Page)
+	end
+
+	def pages_named(name)
+		rxName = Regexp.new(name)
+		all.select { |p| p.name =~ rxName }
 	end
 end
