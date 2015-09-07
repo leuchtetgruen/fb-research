@@ -19,7 +19,7 @@ class CommentsDatabase < Database
 	end
 
 	def for_post(post)
-		all.select { |c| c.refers_to == post }
+		all.select { |c| c.refers_to == post }
 	end
 
 	def on_page(page)
