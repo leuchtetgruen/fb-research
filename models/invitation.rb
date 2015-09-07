@@ -41,6 +41,12 @@ class InvitationsDatabase < Database
 		all.map { |i| i.event.query_data(eventsDatabase) }
 	end
 
+  def save_for_event(e)
+    invitations = e.all_invitations
+    putAll(invitations)
+    persist
+  end
+
 	def events
 		all.map(&:event).uniq { |e| e.id }
 	end
