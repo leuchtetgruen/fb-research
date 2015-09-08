@@ -1,3 +1,18 @@
+def get_follow_redirects(uri, request_max = 5)
+  raise "Max number of redirects reached" if request_max <= 0
+
+  response = Net::HTTP.get_response(uri)
+  case response.code.to_i
+  when 200
+    response.body
+  when 301..303
+    get_follow_redirects(URI(response['location']), request_max - 1)
+  else
+    response.code
+  end
+end
+
+
 def query(url, klass)
     next_url = url
     a_results = []
