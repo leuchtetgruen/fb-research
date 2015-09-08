@@ -193,7 +193,15 @@ def import_news(dbs,timespan=1.days.ago)
   import_comments_and_likes_from_after(timespan, dbs)
 end
 
-def import_page(page, pagesDatabase, postsDatabase, commentsDatabase, likesDatabase, peopleDatabase, eventsDatabase, invitationsDatabase, ignore_existing=false)
+def import_page(page, databases, ignore_existing=false)
+	pagesDatabase = databases[:pages]
+	postsDatabase = databases[:posts]
+	commentsDatabase = databases[:comments]
+	likesDatabase = databases[:likes]
+	peopleDatabase = databases[:people]
+	eventsDatabase = databases[:events]
+	invitationsDatabase = databases[:invitations]
+	raise "Should be PagesDatabase" unless pagesDatabase.kind_of?(PagesDatabase)
 	raise "Should be PostsDatabase" unless postsDatabase.kind_of?(PostsDatabase)
 	raise "Should be CommentsDatabase" unless commentsDatabase.kind_of?(CommentsDatabase)
 	raise "Should be LikesDatabase" unless likesDatabase.kind_of?(LikesDatabase)
