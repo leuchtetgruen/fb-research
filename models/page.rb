@@ -7,6 +7,11 @@ class Page < NamedItem
   def feed
     query_posts(url_for("feed")).map { |p| p.page = self; p }
   end
+
+  def to_s(query=true)
+    query_data if query
+    name
+  end
 end
 
 class PagesDatabase < Database

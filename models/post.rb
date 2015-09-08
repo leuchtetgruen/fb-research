@@ -3,7 +3,6 @@ class Post < Item
 	
 	def initialize(hash, query_data=Conf::QUERY_DATA)
     super(hash, query_data)
-    @page = Page.new(hash["page"]) if hash["page"]
 	end
 
   def likes
@@ -15,10 +14,26 @@ class Post < Item
 			l.build_id
 			l
 		end
+
 	end
 
   def comments
     query_comments(url_for("comments")).map { |c| c.refers_to = self; c }
+  end
+
+  def to_s(query=true)
+    query_data if query
+    title = "BY #{page.to_s} (#{created_time})"
+    line = ("=" * title.length)
+    msg = message or ""
+    sty = story or ""
+
+    "#{title}\r\n#{line}\r\n#{msg}\r\nStory: #{sty}"
+  end
+
+  def fill_from_hash(hash)
+    super(hash)
+    @page = Page.new(hash["page"]) if hash["page"]
   end
 end
 
@@ -34,6 +49,13 @@ class PostsDatabase < Database
 	def posts_by(page)
 		all.select { |p| p.page == page }
 	end
+
+  def posts_liked_by(person, databases)
+    likesDatabase = databases[:likes]
+    posts = likesDatabase.by_person(person).map(&:refers_to_post).compact
+    posts.each { |p| p.query_data(self) }
+    posts
+  end
 
 	def pages
 		all.map(&:page).uniq { |p| p.id }

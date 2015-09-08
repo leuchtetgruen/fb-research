@@ -7,6 +7,12 @@ class Comment < Item
 		@author = Person.new(hash["author"]) if hash["author"]
 		@refers_to = Post.new(hash["refers_to"]) if hash["refers_to"]
   end
+
+  def to_s(query=true)
+    @author.query_data if query
+
+    "#{author.to_s} : #{message}"
+  end
 end
 
 class CommentsDatabase < Database

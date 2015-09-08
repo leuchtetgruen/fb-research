@@ -20,6 +20,10 @@ class Like < Item
 						"#{@person.id}->#{@refers_to_comment.id}"
 					end
 	end
+
+  def to_s(query=true)
+    person.to_s(query)
+  end
 end
 
 class LikesDatabase < Database
@@ -42,4 +46,8 @@ class LikesDatabase < Database
 	def has_post?(p)
 		all.map(&:refers_to_post).map(&:id).include?(p.id)
 	end
+
+  def for_post(p)
+    all.select { |l| l.refers_to_post.id == p.id }
+  end
 end

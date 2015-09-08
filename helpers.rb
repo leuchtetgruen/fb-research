@@ -134,7 +134,9 @@ def find_friends(person, array, peopleDatabase)
 	person
 end
 
-def import_new_posts(pagesDatabase, postsDatabase)
+def import_new_posts(databases)
+  pagesDatabase = databases[:pages]
+  postsDatabase = databases[:posts]
 	raise "Should be PagesDatabase" unless pagesDatabase.kind_of?(PagesDatabase)
 	raise "Should be PostsDatabase" unless postsDatabase.kind_of?(PostsDatabase)
 	
@@ -144,9 +146,15 @@ def import_new_posts(pagesDatabase, postsDatabase)
 		feed = page.feed
 		postsDatabase.putNew(feed)
 	end
+  postsDatabase.persist
 end
 
-def import_comments_and_likes_from_after(timestamp, postsDatabase, pagesDatabase, commentsDatabase, likesDatabase, peopleDatabase)
+def import_comments_and_likes_from_after(timestamp, databases)
+  postsDatabase = databases[:posts]
+  pagesDatabase = databases[:pages]
+  commentsDatabase = databases[:comments]
+  likesDatabase = databases[:likes]
+  peopleDatabase = databases[:people]
 	raise "Should be PostsDatabase" unless postsDatabase.kind_of?(PostsDatabase)
 	raise "Should be PagesDatabase" unless pagesDatabase.kind_of?(PagesDatabase)
 	raise "Should be CommentsDatabase" unless commentsDatabase.kind_of?(CommentsDatabase)
@@ -176,6 +184,13 @@ def import_comments_and_likes_from_after(timestamp, postsDatabase, pagesDatabase
 	peopleDatabase.persist
 
 	puts "Done."
+end
+
+def import_news(dbs,timespan=1.days.ago)
+  puts "Importing new posts from pages..."
+  import_new_posts(dbs)
+  puts "Importing likes and comments..."
+  import_comments_and_likes_from_after(timespan, dbs)
 end
 
 def import_page(page, pagesDatabase, postsDatabase, commentsDatabase, likesDatabase, peopleDatabase, eventsDatabase, invitationsDatabase, ignore_existing=false)

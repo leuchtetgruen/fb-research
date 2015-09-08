@@ -8,6 +8,7 @@ $: << "."
 
 require "config.rb"
 require "helpers.rb"
+require "reader.rb"
 require "models/database.rb"
 require "models/item.rb"
 require "models/named_item.rb"
@@ -40,6 +41,16 @@ likesDatabase = LikesDatabase.new
 
 puts "Loading comments..."
 commentsDatabase = CommentsDatabase.new
+
+@databases = {
+  people: peopleDatabase,
+  pages: pagesDatabase,
+  posts: postsDatabase,
+  events: eventsDatabase,
+  invitations: invitationsDatabase,
+  likes: likesDatabase,
+  comments: commentsDatabase
+}
 
 binding.pry
 

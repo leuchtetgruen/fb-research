@@ -19,6 +19,11 @@ class Person < Item
 		@hash
 	end
 
+  def to_s(query=true)
+    query_data if query
+    name
+  end
+
 end
 
 class PeopleDatabase < Database
