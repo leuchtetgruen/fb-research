@@ -57,6 +57,13 @@ class PostsDatabase < Database
     posts
   end
 
+  def posts_commented_by(person, databases)
+    commentsDatabase = databases[:comments]
+    posts = commentsDatabase.by_person(person).map(&:refers_to).compact
+    posts.each { |p| p.query_data(self) }
+    posts
+  end
+
 	def pages
 		all.map(&:page).uniq { |p| p.id }
 	end

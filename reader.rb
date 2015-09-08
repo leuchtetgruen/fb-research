@@ -25,9 +25,9 @@ def show_posts(posts, databases=@databases)
     when 'C'
       comments = databases[:comments].for_post(post)
       comments.each do |comment|
-        puts comment
-        puts "--- (X) back to posts, (O)pen in Browser"
-        options = STDIN.getch.upcase
+        puts "  #{comment.to_s(false)}"
+        puts "  --- (X) back to posts, (O)pen in Browser, Show (A)ll comments without keypress"
+        option = STDIN.getch.upcase if option != "A"
         break if option == "X"
         system("open \"https://facebook.com/#{comment.id}\"") if option == "O"
       end
