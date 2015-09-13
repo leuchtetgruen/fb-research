@@ -43,4 +43,13 @@ class PeopleDatabase < Database
 	def friends_of(person)
 		(people_with_friends.select { |p| p.friends.map(&:id).include?(person.id) } + (person.friends || []))
 	end
+
+	def real_id(person)
+		person.query_data(self)
+		unique_person_named(person.name)
+	end
+
+	def unique_person_named(name)
+		people_named(name).select { |p| p.id.start_with?("1") }.first
+	end
 end
