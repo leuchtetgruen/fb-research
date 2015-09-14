@@ -66,7 +66,7 @@ def query_posts(url)
 end
 
 def wait
-  puts "Waiting for #{Conf::WAIT_SECONDS} seconds..."
+  puts "Waiting for #{Conf::WAIT_SECONDS} seconds..." if Conf::DEBUG
   sleep(Conf::WAIT_SECONDS)
 end
 

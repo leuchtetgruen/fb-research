@@ -3,6 +3,6 @@ class Conf
   QUERY_DATA = false
   DEBUG =  false
   MAX_DEPTH = 5
-  WAIT_SECONDS = 2
-  DO_WAIT_AFTER_EACH_REQUEST = true
+  WAIT_SECONDS = 0.5
+  DO_WAIT_AFTER_EACH_REQUEST = false
 end

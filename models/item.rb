@@ -22,11 +22,15 @@ class Item
 			puts "Saving #{self.to_h} to #{database}" if Conf::DEBUG
 			database.put(self) unless database.include?(self)
 		else
-			url = "https://graph.facebook.com/v2.4/#{@id}/?access_token=#{Conf::OAUTH_TOKEN}"
-			res = Net::HTTP.get(URI.parse(url))
-			j_res = JSON.parse(res)
-			@data = j_res
-			fill_from_hash @data
+      begin
+        url = "https://graph.facebook.com/v2.4/#{@id}/?access_token=#{Conf::OAUTH_TOKEN}"
+        res = Net::HTTP.get(URI.parse(url))
+        j_res = JSON.parse(res)
+        @data = j_res
+        fill_from_hash @data
+      rescue Exception => e
+        puts "Error while querying for #{self.class.to_s}."
+      end
 		end
   end
 
