@@ -76,6 +76,7 @@ class EventsDatabase < Database
 				invitationsDatabase.putAll(invitations)
 			end
 		end
+    invitationsDatabase.persist
 	end
 
 	def load_pages(pagesDatabase)

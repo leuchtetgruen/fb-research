@@ -19,6 +19,10 @@ class PagesDatabase < Database
 		super(filename, Page)
 	end
 
+  def active
+    all.select { |p| !p.ignore }
+  end
+
 	def pages_named(name)
 		rxName = Regexp.new(name)
 		all.select { |p| p.name =~ rxName }

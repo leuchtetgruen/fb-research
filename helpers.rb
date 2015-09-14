@@ -13,28 +13,33 @@ def get_follow_redirects(uri, request_max = 5)
 end
 
 
-def query(url, klass)
+def query(url, klass, wait_after_each_request=Conf::DO_WAIT_AFTER_EACH_REQUEST)
     next_url = url
     a_results = []
     while next_url do
       p next_url if Conf::DEBUG
-      res = Net::HTTP.get(URI.parse(next_url))
-      j_res = JSON.parse(res)
-      p j_res if Conf::DEBUG
+      begin
+        res = Net::HTTP.get(URI.parse(next_url))
+        j_res = JSON.parse(res)
+        p j_res if Conf::DEBUG
+        a_results << j_res["data"]
+        next_url = if j_res["paging"]
+                     j_res["paging"]["next"]
+                   else
+                     nil
+                   end
+      rescue Exception => e
+        j_res = {"error" =>  "Could not query data from #{url} for class #{klass.to_s} due to Exception #{e.to_s}"}
+      end
 
       if j_res["error"]
         puts "An error occured. Maybe check your OAUTH_TOKEN in config.rb or your ENV variables"
         p j_res["error"]
       end
 
-      a_results << j_res["data"]
-      next_url = if j_res["paging"]
-                   j_res["paging"]["next"]
-                 else
-                   nil
-                 end
+      wait if wait_after_each_request
     end
-    a_results.flatten!
+    a_results = a_results.compact.flatten
     a_results.map do |h_result|
       klass.new(h_result)
     end
@@ -57,7 +62,12 @@ def query_pages(url)
 end
 
 def query_posts(url)
-  query(url, Post)
+  posts = query(url, Post)
+end
+
+def wait
+  puts "Waiting for #{Conf::WAIT_SECONDS} seconds..."
+  sleep(Conf::WAIT_SECONDS)
 end
 
 def json(obj,database=false)
@@ -140,8 +150,7 @@ def import_new_posts(databases)
 	raise "Should be PagesDatabase" unless pagesDatabase.kind_of?(PagesDatabase)
 	raise "Should be PostsDatabase" unless postsDatabase.kind_of?(PostsDatabase)
 	
-	pagesDatabase.all.each do |page|
-		next if page.ignore
+	pagesDatabase.active.each do |page|
 		puts "Querying #{page.name} for new posts..."
 		feed = page.feed
 		postsDatabase.putNew(feed)
