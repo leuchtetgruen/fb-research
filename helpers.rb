@@ -186,7 +186,7 @@ def import_comments_and_likes_from_after(timestamp, databases)
 	puts "Done."
 end
 
-def import_news(dbs,timespan=1.days.ago)
+def import_news(dbs=@databases,timespan=1.days.ago)
   puts "Importing new posts from pages..."
   import_new_posts(dbs)
   puts "Importing likes and comments..."
