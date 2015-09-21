@@ -158,6 +158,28 @@ def import_new_posts(databases)
   postsDatabase.persist
 end
 
+def import_event(event, databases=@databases)
+  eventsDatabase = databases[:events]
+  puts "Querying event data..."
+  event.query_data
+  eventsDatabase.put(event)
+  puts "Saving event"
+  eventsDatabase.persist
+
+  invitationsDatabase = databases[:invitations]
+  puts "Querying invitations..."
+  invitations = event.all_invitations
+  invitationsDatabase.putAll(invitations)
+  puts "Saving invitations"
+  invitationsDatabase.persist
+
+  peopleDatabase = databases[:people]
+  puts "Saving people (#{invitations.size})..."
+  people = invitations.map(&:person)
+  peopleDatabase.putAll(people, true)
+  peopleDatabase.persist
+end
+
 def import_comments_and_likes_from_after(timestamp, databases)
   postsDatabase = databases[:posts]
   pagesDatabase = databases[:pages]
