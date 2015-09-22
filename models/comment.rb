@@ -8,6 +8,17 @@ class Comment < Item
 		@refers_to = Post.new(hash["refers_to"]) if hash["refers_to"]
   end
 
+  def likes
+		people = query_people(url_for("likes"))
+		people.map do |p|
+			l = Like.new({})
+			l.person = p
+			l.refers_to_comment = self
+			l.build_id
+			l
+		end
+  end
+
   def to_s(query=true)
     @author.query_data if query
 
