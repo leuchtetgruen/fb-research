@@ -48,6 +48,6 @@ class LikesDatabase < Database
 	end
 
   def for_post(p)
-    all.select { |l| l.refers_to_post.id == p.id }
+    all.select { |l| l.refers_to_post && (l.refers_to_post.id == p.id) }
   end
 end
