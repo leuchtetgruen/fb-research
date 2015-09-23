@@ -50,4 +50,16 @@ class LikesDatabase < Database
   def for_post(p)
     all.select { |l| l.refers_to_post && (l.refers_to_post.id == p.id) }
   end
+
+  def exists_for_post?(p)
+    all.any? { |l| l.refers_to_post && (l.refers_to_post.id == p.id) }
+  end
+
+  def for_comment(c)
+    all.select { |l| l.refers_to_comment && (l.refers_to_comment.id == c.id)}
+  end
+
+  def exists_for_comment?(c)
+    all.any? { |l| l.refers_to_comment && (l.refers_to_comment.id == c.id) }
+  end
 end

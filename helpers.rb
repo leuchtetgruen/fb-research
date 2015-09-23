@@ -304,17 +304,24 @@ def import_all_comment_likes(databases=@databases)
   likesDatabase = databases[:likes]
   commentsDatabase = databases[:comments]
   peopleDatabase = databases[:people]
-  sz = commentsDatabase.all.size
-  #TODO change - remove the range
-  commentsDatabase.all[18500..-1].reverse.each_with_index do |comment, i|
-    puts "#{i}/#{sz}..."
-    likes = comment.likes
-    likesDatabase.putAll(likes)
-    peopleDatabase.putNew(likes.map(&:person))
+  coll = commentsDatabase.all.reverse
+  sz = coll.size
+  coll.each_with_index do |comment, i|
+    print "#{i}/#{sz}..."
     if ((i % 1000 == 0) and (i > 0))
       puts "Saving databases..."
       likesDatabase.persist
       peopleDatabase.persist
     end
+    if likesDatabase.exists_for_comment?(comment)
+      puts ""
+      next
+    else 
+      puts "."
+    end
+
+    likes = comment.likes
+    likesDatabase.putAll(likes)
+    peopleDatabase.putNew(likes.map(&:person))
   end
 end
