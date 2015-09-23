@@ -200,6 +200,12 @@ def import_comments_and_likes_from_after(timestamp, databases)
 		print "Querying #{idx}/#{posts.size}."
 		comments = post.comments
 		commentsDatabase.putNew(comments)
+    comments.each { |c|
+      print ","
+      c_likes = c.likes
+      likesDatabase.putNew(c_likes)
+      peopleDatabase.putNew(c_likes.map(&:person))
+    }
 		print "."
 		likes = post.likes
 		likesDatabase.putNew(likes)
@@ -292,4 +298,23 @@ def import_page(page, databases, ignore_existing=false)
 
 
 	puts "Done."
+end
+
+def import_all_comment_likes(databases=@databases)
+  likesDatabase = databases[:likes]
+  commentsDatabase = databases[:comments]
+  peopleDatabase = databases[:people]
+  sz = commentsDatabase.all.size
+  #TODO change - remove the range
+  commentsDatabase.all[18500..-1].reverse.each_with_index do |comment, i|
+    puts "#{i}/#{sz}..."
+    likes = comment.likes
+    likesDatabase.putAll(likes)
+    peopleDatabase.putNew(likes.map(&:person))
+    if ((i % 1000 == 0) and (i > 0))
+      puts "Saving databases..."
+      likesDatabase.persist
+      peopleDatabase.persist
+    end
+  end
 end
