@@ -304,7 +304,7 @@ def import_all_comment_likes(databases=@databases)
   likesDatabase = databases[:likes]
   commentsDatabase = databases[:comments]
   peopleDatabase = databases[:people]
-  coll = commentsDatabase.all.reverse
+  coll = commentsDatabase.all.reverse[19001..-1]
   sz = coll.size
   coll.each_with_index do |comment, i|
     print "#{i}/#{sz}..."
