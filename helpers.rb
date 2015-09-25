@@ -304,7 +304,7 @@ def import_all_comment_likes(databases=@databases)
   likesDatabase = databases[:likes]
   commentsDatabase = databases[:comments]
   peopleDatabase = databases[:people]
-  coll = commentsDatabase.all.reverse[19001..-1]
+  coll = commentsDatabase.all.reverse[34001..-1]
   sz = coll.size
   coll.each_with_index do |comment, i|
     print "#{i}/#{sz}..."
@@ -324,4 +324,18 @@ def import_all_comment_likes(databases=@databases)
     likesDatabase.putAll(likes)
     peopleDatabase.putNew(likes.map(&:person))
   end
+end
+
+def likelyness(p1, p2, databases=@databases)
+  likesDatabase = databases[:likes]
+  likes_p1 = likesDatabase.by_person(p1)
+  likes_p2 = likesDatabase.by_person(p2)
+
+  p1_p2 = likes_p1  & likes_p2
+
+  perct_common_p1 = (p1_p2).size.to_f / likes_p1.size.to_f
+  perct_common_p2 = (p1_p2).size.to_f / likes_p2.size.to_f
+
+  puts "#{p2.name} likes #{perct_common_p1 * 100}% of #{p1.name}'s likes'"
+  puts "#{p1.name} likes #{perct_common_p2 * 100}% of #{p2.name}'s likes'"
 end
