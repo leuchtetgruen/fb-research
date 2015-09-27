@@ -18,7 +18,7 @@ class Post < Item
 	end
 
   def comments
-    query_comments(url_for("comments")).map { |c| c.refers_to = self; c }
+    query_comments(url_for("comments")).map { |c| c.refers_to_post = self; c }
   end
 
   def to_s(query=true)

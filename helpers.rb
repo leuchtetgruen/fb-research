@@ -205,6 +205,15 @@ def import_comments_and_likes_from_after(timestamp, databases)
       c_likes = c.likes
       likesDatabase.putNew(c_likes)
       peopleDatabase.putNew(c_likes.map(&:person))
+
+
+      comment_commments = c.comments
+      commentsDatabase.putAll(comment_commments)
+      print ";"
+      c_c_likes = comment_commments.map(&:likes).flatten
+      print "#"
+      likesDatabase.putAll(c_c_likes)
+      peopleDatabase.putNew(c_c_likes.map(&:person))
     }
 		print "."
 		likes = post.likes
@@ -321,6 +330,36 @@ def import_all_comment_likes(databases=@databases)
     end
 
     likes = comment.likes
+    likesDatabase.putAll(likes)
+    peopleDatabase.putNew(likes.map(&:person))
+  end
+end
+
+def import_all_comment_comments(databases=@databases)
+  likesDatabase = databases[:likes]
+  commentsDatabase = databases[:comments]
+  peopleDatabase = databases[:people]
+  coll = commentsDatabase.all.select { |c| c.refers_to_comment.nil? }.reverse
+  sz = coll.size
+  coll.each_with_index do |comment, i|
+    print "#{i}/#{sz}..."
+    if ((i % 1000 == 0) and (i > 0))
+      puts "Saving databases..."
+      likesDatabase.persist
+      peopleDatabase.persist
+    end
+
+    if commentsDatabase.has_comments_for_comment?(comment)
+      puts ""
+      next
+    end
+
+    print "."
+    comment_commments = comment.comments
+    commentsDatabase.putAll(comment_commments)
+    print "."
+    likes = comment_commments.map(&:likes).flatten
+    puts "(#{comment_commments.size}/#{likes.size})"
     likesDatabase.putAll(likes)
     peopleDatabase.putNew(likes.map(&:person))
   end
