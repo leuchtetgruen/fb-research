@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$0")"
+
+export OAUTH_TOKEN=ACTUAL_OAUTH_TOKEN #Replace with actual oauth token
+export FB_EMAIL=ACTUAL_FB_EMAIL #Replace with actual fb email
+export FB_PASSWORD=ACTUAL_FB_PW #Replace with actual fb password
+ruby fb_research.rb scripts/import_last_day.rb
+casperjs save-specific-facebook-post.coffee
+
