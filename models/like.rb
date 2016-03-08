@@ -43,6 +43,12 @@ class LikesDatabase < Database
 		all.select { |l| l.person.id == p.id }
 	end
 
+  def by_people(people)
+    all.select do |comment|
+      people.include? comment.person
+    end
+  end
+
 	def has_post?(p)
 		all.map(&:refers_to_post).map(&:id).include?(p.id)
 	end

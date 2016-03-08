@@ -279,6 +279,7 @@ def import_page(page, databases, ignore_existing=false)
 	if ignore_existing
 		posts = posts.select { |p| !commentsDatabase.has_post?(p) }
 	end
+  postsDatabase.putAll(posts)
 	posts.each_with_index do |post, idx|
 		print "Querying #{idx}/#{posts.size}."
 		comments = post.comments
@@ -304,6 +305,7 @@ def import_page(page, databases, ignore_existing=false)
 	commentsDatabase.persist
 	likesDatabase.persist
 	peopleDatabase.persist
+  postsDatabase.persist
 
 
 	puts "Done."

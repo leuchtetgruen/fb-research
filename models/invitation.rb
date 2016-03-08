@@ -33,6 +33,16 @@ class InvitationsDatabase < Database
 		all.map(&:event).map(&:id).include?(e.id)
 	end
 
+  def for_person(p)
+    all.select { |i| i.person.id == p.id }
+  end
+
+  def for_people(people)
+    all.select do |invitation|
+      people.include? invitation.person
+    end
+  end
+
 	def load_people(peopleDatabase)
 		all.map { |i| i.person.query_data(peopleDatabase) }
 	end

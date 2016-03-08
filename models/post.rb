@@ -47,7 +47,7 @@ class PostsDatabase < Database
 	end
 
 	def posts_by(page)
-		all.select { |p| p.page == page }
+		all.select { |p| p.page.id == page.id }
 	end
 
   def posts_liked_by(person, databases)

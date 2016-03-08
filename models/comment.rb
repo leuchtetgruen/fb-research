@@ -45,6 +45,12 @@ class CommentsDatabase < Database
 		all.select { |c| c.author == person }
 	end
 
+  def by_people(people)
+    all.select do |comment|
+      people.include? comment.author
+    end
+  end
+
 	def for_post(post)
 		all.select { |c| c.refers_to_post == post }
 	end
