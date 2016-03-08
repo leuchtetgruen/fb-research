@@ -9,6 +9,11 @@ $: << "."
 require "config.rb"
 require "helpers.rb"
 require "reader.rb"
+
+unless Conf.check
+  exit
+end
+
 require "models/database.rb"
 require "models/item.rb"
 require "models/named_item.rb"
@@ -52,4 +57,13 @@ commentsDatabase = CommentsDatabase.new
   comments: commentsDatabase
 }
 
-binding.pry
+
+
+if ARGV.size == 0
+  binding.pry
+else
+  ARGV.each do |arg|
+    puts "Running #{arg}..."
+    require arg
+  end
+end
