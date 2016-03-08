@@ -1,0 +1,13 @@
+FB-Research is a tool to do research on social connections on facebook.
+
+It helps to automatically query posts, comments and likes and provides
+structures to save friendship-connections and invitations to events.
+
+Using a casperjs-script it also allows you to make screenshots of posts and
+associated comments and likes.
+
+However you need to set the following environment variables:
+
+* OAUTH_TOKEN -> include a valid oauth token for use with facebook
+* FB_EMAIL -> Facebook login (email) for screenshot creation
+* FB_PASSWORD -> Facebook login (password) for screenshot creation
