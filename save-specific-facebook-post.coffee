@@ -1,6 +1,7 @@
 WAIT_TIME = 3500
 RAND_ON_TOP_TIME = 2000
 
+POSTS_FILE = "output/posts.json"
 OUTPUT_DIR = "output/post-screenshots"
 
 fs = require('fs')
@@ -8,6 +9,11 @@ _ = require('underscore')
 system = require('system')
 
 console.log "Loading posts..."
+posts_data = fs.read(POSTS_FILE)
+posts = JSON.parse(posts_data)
+
+post_ids = _.map posts, (p) -> p.id
+
 
 casper = require('casper').create()
 casper.start().thenOpen 'https://facebook.com/', () ->
